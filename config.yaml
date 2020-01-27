@@ -1,8 +1,8 @@
 --- 
 configurations: 
   - 
-    description: "DEA Hotspots Animation Victoria"
-    name: 'vichotspots' #'name of spatial subset'
+    description: "DEA Hotspots animation Victoria New South Wales"
+    name: 'vicnswhotspots' #'name of spatial subset'
     sensors: #sensors to use in animation
       -
         AVHRR: ['SRSS']
@@ -10,47 +10,21 @@ configurations:
         VIIRS: ['AFMOD', 'EDR'] 
     time_period: 28 #time period prior to now in days
     timezone: 'Australia/Sydney' #timezone for display
-    y_max: -33.980426 #latitude top left
-    x_min: 140.961682 #longitude top left
-    y_min: -39.159082 #latitude bottom right
-    x_max: 149.976291 #longitude bottom right
+    timezone_code: 'AEDT'
+    bbox: [-28.157021, 140.961682, -39.159082, 154.109154 ] # y_max, x_min, y_min, x_max
     min_confidence: 20 #minimum confidence 0 - 100 percent
     max_features: 500000 #maximum number of features to load from WFS
-    frame_freq: '3H' #frame frequency for ffmpeg
-    hotspots_markersize: 3 #size to plot hotspots on map
-    hotspots_alpha: 0.5 #transparency to plot hotspots on map
-    fade_hours: 72 #hours used to fade hotspots
-    fade_cmap: '#2B2D2F' #colour for faded hotspots
-    hotspots_cmap: 'autumn' #colour ramp for plotting hotspots
-    url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
-    layer: "landsat8_geomedian" #WMS layer name
-  - 
-    description: "DEA Hotspots Animation NSW"
-    name: 'nswhotspots' #'name of spatial subset'
-    sensors: #sensors to use in animation
-      -
-        AVHRR: ['SRSS']
-        MODIS: ['MOD14']
-        VIIRS: ['AFMOD', 'EDR'] 
-    time_period: 28 #time period prior to now in days
-    timezone: 'Australia/Sydney' #timezone for display
-    y_max: -28.157021 #latitude top left
-    x_min: 140.999268 #longitude top left
-    y_min: -37.505077 #latitude bottom right
-    x_max: 159.109154 #longitude bottom right
-    min_confidence: 20 #minimum confidence 0 - 100 percent
-    max_features: 500000 #maximum number of features to load from WFS
-    frame_freq: '3H' #frame frequency for ffmpeg
+    frame_freq: '4H' #frame frequency for ffmpeg
     hotspots_markersize: 4 #size to plot hotspots on map
     hotspots_alpha: 0.5 #transparency to plot hotspots on map
     fade_hours: 72 #hours used to fade hotspots
-    fade_cmap: '#8C8D8F' #colour for faded hotspots
+    fade_cmap: '#2B2D2F' #colour for faded hotspots
     hotspots_cmap: 'YlOrRd' #colour ramp for plotting hotspots
     url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
     layer: "landsat8_geomedian" #WMS layer name
   - 
-    description: "DEA Hotspots Animation Western Australia"
-    name: 'wahotspots' #'name of spatial subset'
+    description: "DEA Hotspots animation South Western Australia"
+    name: 'swahotspots' #'name of spatial subset'
     sensors: #sensors to use in animation
       -
         AVHRR: ['SRSS']
@@ -58,22 +32,42 @@ configurations:
         VIIRS: ['AFMOD', 'EDR']  
     time_period: 28 #time period prior to now in days
     timezone: 'Australia/Perth' #timezone for display
-    y_max: -13.688726 #latitude top left
-    x_min: 112.921114 #longitude top left
-    y_min: -35.192008 #latitude bottom right
-    x_max: 129.002045 #longitude bottom right
+    timezone_code: 'AWST'
+    bbox: [-23.688726 , 112.921114, -35.192008, 129.002045] # y_max, x_min, y_min, x_max
     min_confidence: 20 #minimum confidence 0 - 100 percent
     max_features: 500000 #maximum number of features to load from WFS
     frame_freq: '4H' #frame frequency for ffmpeg
     hotspots_markersize: 4 #size to plot hotspots on map
     hotspots_alpha: 0.5 #transparency to plot hotspots on map
     fade_hours: 72 #hours used to fade hotspots
-    fade_cmap: '#8C8D8F' #colour for faded hotspots
+    fade_cmap: '#2B2D2F' #colour for faded hotspots
     hotspots_cmap: 'YlOrRd' #colour ramp for plotting hotspots
     url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
     layer: "landsat8_geomedian" #WMS layer name
   - 
-    description: "DEA Hotspots Animation Queensland"
+    description: "DEA Hotspots animation North Western Australia"
+    name: 'nwahotspots' #'name of spatial subset'
+    sensors: #sensors to use in animation
+      -
+        AVHRR: ['SRSS']
+        MODIS: ['MOD14']
+        VIIRS: ['AFMOD', 'EDR']  
+    time_period: 28 #time period prior to now in days
+    timezone: 'Australia/Perth' #timezone for display
+    timezone_code: 'AWST'
+    bbox: [ -13.688726, 112.921114 , -25.192008, 129.002045 ] # y_max, x_min, y_min, x_max
+    min_confidence: 20 #minimum confidence 0 - 100 percent
+    max_features: 500000 #maximum number of features to load from WFS
+    frame_freq: '4H' #frame frequency for ffmpeg
+    hotspots_markersize: 4 #size to plot hotspots on map
+    hotspots_alpha: 0.5 #transparency to plot hotspots on map
+    fade_hours: 72 #hours used to fade hotspots
+    fade_cmap: '#2B2D2F' #colour for faded hotspots
+    hotspots_cmap: 'YlOrRd' #colour ramp for plotting hotspots
+    url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
+    layer: "landsat8_geomedian" #WMS layer name
+  - 
+    description: "DEA Hotspots animation Queensland"
     name: 'qldhotspots' #'name of spatial subset'
     sensors: #sensors to use in animation
       -
@@ -82,22 +76,20 @@ configurations:
         VIIRS: ['AFMOD', 'EDR'] 
     time_period: 28 #time period prior to now in days
     timezone: 'Australia/Brisbane' #timezone for display
-    y_max: -9.142306 #latitude top left
-    x_min: 137.994325 #longitude top left
-    y_min: -29.177893 #latitude bottom right
-    x_max: 153.552171 #longitude bottom right
+    timezone_code: 'AEST'
+    bbox: [ -9.142306 , 137.994325 , -29.177893 , 153.552171 ] # y_max, x_min, y_min, x_max
     min_confidence: 20 #minimum confidence 0 - 100 percent
     max_features: 500000 #maximum number of features to load from WFS
     frame_freq: '4H' #frame frequency for ffmpeg
     hotspots_markersize: 4 #size to plot hotspots on map
     hotspots_alpha: 0.5 #transparency to plot hotspots on map
     fade_hours: 72 #hours used to fade hotspots
-    fade_cmap: '#8C8D8F' #colour for faded hotspots
+    fade_cmap: '#2B2D2F' #colour for faded hotspots
     hotspots_cmap: 'YlOrRd' #colour ramp for plotting hotspots
     url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
     layer: "landsat8_geomedian" #WMS layer name
   - 
-    description: "DEA Hotspots Animation North Territory"
+    description: "DEA Hotspots animation North Territory"
     name: 'nthotspots' #'name of spatial subset'
     sensors: #sensors to use in animation
       -
@@ -106,22 +98,20 @@ configurations:
         VIIRS: ['AFMOD', 'EDR']  
     time_period: 28 #time period prior to now in days
     timezone: 'Australia/Darwin' #timezone for display
-    y_max: -10.905918 #latitude top left
-    x_min: 129.00044 #longitude top left
-    y_min: -25.998614 #latitude bottom right
-    x_max: 137.999054 #longitude bottom right
+    timezone_code: 'ACDT'
+    bbox: [ -10.905918 , 129.00044 , -25.998614 , 137.999054 ] # y_max, x_min, y_min, x_max
     min_confidence: 20 #minimum confidence 0 - 100 percent
     max_features: 500000 #maximum number of features to load from WFS
     frame_freq: '4H' #frame frequency for ffmpeg
     hotspots_markersize: 4 #size to plot hotspots on map
     hotspots_alpha: 0.5 #transparency to plot hotspots on map
     fade_hours: 72 #hours used to fade hotspots
-    fade_cmap: '#8C8D8F' #colour for faded hotspots
+    fade_cmap: '#2B2D2F' #colour for faded hotspots
     hotspots_cmap: 'YlOrRd' #colour ramp for plotting hotspots
-    url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
-    layer: "landsat8_geomedian" #WMS layer name
+    url: "http://ows.mundialis.de/services/service?" #"https://gsky.nci.org.au/ows/dea" #WMS for background image
+    layer: "SRTM30-Hillshade" #WMS layer name
   - 
-    description: "DEA Hotspots Animation South Australia"
+    description: "DEA Hotspots animation South Australia"
     name: 'sahotspots' #'name of spatial subset'
     sensors: #sensors to use in animation
       -
@@ -130,22 +120,20 @@ configurations:
         VIIRS: ['AFMOD', 'EDR']  
     time_period: 28 #time period prior to now in days
     timezone: 'Australia/Adelaide' #timezone for display
-    y_max: -25.996146 #latitude top left
-    x_min: 129.001337 #longitude top left
-    y_min: -38.062117 #latitude bottom right
-    x_max: 141.002956 #longitude bottom right
+    timezone_code: 'ACDT'
+    bbox: [ -25.996146 , 129.001337, -38.062117, 141.002956 ] # y_max, x_min, y_min, x_max
     min_confidence: 20 #minimum confidence 0 - 100 percent
     max_features: 500000 #maximum number of features to load from WFS
     frame_freq: '4H' #frame frequency for ffmpeg
     hotspots_markersize: 4 #size to plot hotspots on map
     hotspots_alpha: 0.5 #transparency to plot hotspots on map
     fade_hours: 72 #hours used to fade hotspots
-    fade_cmap: '#8C8D8F' #colour for faded hotspots
+    fade_cmap: '#2B2D2F' #colour for faded hotspots
     hotspots_cmap: 'YlOrRd' #colour ramp for plotting hotspots
     url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
     layer: "landsat8_geomedian" #WMS layer name
   - 
-    description: "DEA Hotspots Animation Tasmania"
+    description: "DEA Hotspots animation Tasmania"
     name: 'tashotspots' #'name of spatial subset'
     sensors: #sensors to use in animation
       -
@@ -154,17 +142,15 @@ configurations:
         VIIRS: ['AFMOD', 'EDR'] 
     time_period: 28 #time period prior to now in days
     timezone: 'Australia/Hobart' #timezone for display
-    y_max: -39.203793 #latitude top left
-    x_min: 143.818923 #longitude top left
-    y_min: -43.740482 #latitude bottom right
-    x_max: 148.498674 #longitude bottom right
+    timezone_code: 'AEDT'
+    bbox: [ -39.203793 , 143.818923 , -43.740482 , 148.498674 ] # y_max, x_min, y_min, x_max
     min_confidence: 20 #minimum confidence 0 - 100 percent
     max_features: 500000 #maximum number of features to load from WFS
     frame_freq: '4H' #frame frequency for ffmpeg
     hotspots_markersize: 4 #size to plot hotspots on map
     hotspots_alpha: 0.5 #transparency to plot hotspots on map
     fade_hours: 72 #hours used to fade hotspots
-    fade_cmap: '#8C8D8F' #colour for faded hotspots
+    fade_cmap: '#2B2D2F' #colour for faded hotspots
     hotspots_cmap: 'YlOrRd' #colour ramp for plotting hotspots
     url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
     layer: "landsat8_geomedian" #WMS layer name
