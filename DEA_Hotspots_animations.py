@@ -161,8 +161,7 @@ def get_dates(hotspots_gdf, frame_freq):
     logger.info("Dataframe of dates fitting frame frequency created")
     return(comp_dates)
     
-    
-def run_animation(frame_freq, name, hotspots_gdf, ds, hotspots_markersize, hotspots_alpha, fade_hours, fade_cmap, hotspots_cmap, bbox, timezone, timezone_code, layervmax):
+def run_animation(frame_freq, name, hotspots_gdf, ds, hotspots_markersize, hotspots_alpha, fade_hours, fade_cmap, hotspots_cmap, bbox, timezone, timezone_code, layervmax, placenames, placenamexys, placenamepositions):
     y_max = bbox[0]
     x_min = bbox[1]
     y_min = bbox[2]
@@ -233,7 +232,14 @@ def run_animation(frame_freq, name, hotspots_gdf, ds, hotspots_markersize, hotsp
                          'color': 'white', 
                          'fontname':'DejaVu Sans'})
         ax.add_artist(ab)
-
+        count = 0
+        while count < len(placenames):
+            
+            #placename, placenamex, placenamey, placename position in placename
+            
+            ax.annotate(placenames[count], xy=(placenamexys[count][0] , placenamexys[count][1] ), color='white', ha=placenamepositions[count], va='center')
+            count = count + 1
+            #ax.annotate('Sydney', xy=(151.2093,  -33.8688), color='red', ha='left', va='center')
         # Export frame to file
         fig.savefig(f'{output_dir}/hotspots_{i}.png', 
                     bbox_inches='tight',
@@ -321,5 +327,8 @@ if __name__ == '__main__':
                       configuration['bbox'],
                       configuration['timezone'],
                       configuration['timezone_code'],
-                      configuration['layervmax']
+                      configuration['layervmax'],
+                      configuration['placenames'],
+                      configuration['placenamexys'],
+                      configuration['placenamepositions']
                       )
