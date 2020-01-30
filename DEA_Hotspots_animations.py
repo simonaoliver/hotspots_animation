@@ -247,11 +247,11 @@ def run_animation(frame_freq, name, hotspots_gdf, ds, hotspots_markersize, hotsp
         im = Image.open(f'{output_dir}/hotspots_{i}.png') 
         width, height = im.size 
         # Setting the points for cropped image
-        trimpixels = 32
+        trimpixels = 16
         left = trimpixels
         top = 0
-        right = int((width - trimpixels)/16)*16
-        bottom = int((height - trimpixels)/16)*16
+        right = int((width - trimpixels)/2)*2
+        bottom = int((height - trimpixels)/2)*2
           
         # Cropped image of above dimension 
         # (It will not change orginal image) 
