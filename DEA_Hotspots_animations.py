@@ -16,6 +16,7 @@ import geopandas as gpd
 import datetime as dt
 import matplotlib.pyplot as plt
 import matplotlib.image as image
+from PIL import Image
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 import argparse
 parser = argparse.ArgumentParser()
@@ -24,13 +25,15 @@ import yaml
 import xarray as xr
 from owslib.wms import WebMapService
 from matplotlib.cm import get_cmap
-#import numpy as np
 
 # Create custom cmap with dark grey at end 
 parser.add_argument('--configuration', dest='configuration', default='config.yaml',help='animation configuration')
 args = parser.parse_args()
 
-# Set parameters used to load and visualise DEA Hotspots data
+
+
+
+
 
 ################################
 # Load and clean hotspots data #
@@ -69,7 +72,8 @@ def load_hotspots(filter_string, time_period, bbox, max_features, min_confidence
     
     to_date = dt.datetime.today().strftime('%Y-%m-%d')  
     from_date = (dt.datetime.today() - dt.timedelta(days=time_period)).strftime('%Y-%m-%d')
-    #url = f"https://hotspots.dea.ga.gov.au/geoserver/public/wfs?service=WFS&version=1.1.0&request=GetFeature&typeName=public:hotspots&outputFormat=application/json&CQL_FILTER=((sensor=%27AVHRR%27%20AND%20(product=%27SRSS%27))%20OR%20(sensor=%27MODIS%27%20AND%20(product=%27MOD14%27))%20OR%20(sensor=%27VIIRS%27%20AND%20(product=%27AFMOD%27%20OR%20product=%27EDR%27)))%20AND%20datetime%20%3E%20%27{from_date}%27%20AND%20datetime%20%3C%20%27{to_date}%27%20AND%20INTERSECTS(location,%20POLYGON(({y_min}%20{x_min},%20{y_min}%20{x_max},%20{y_max}%20{x_max},%20{y_max}%20{x_min},%20{y_min}%20{x_min})))&maxFeatures={max_features}&startIndex=0&sortBy=sensor%20A"
+    # TODO - sort out paging - looks like there is a limit to WFS requests number returned per query
+    logger.info(f"https://hotspots.dea.ga.gov.au/geoserver/public/wfs?service=WFS&version=1.1.0&request=GetFeature&typeName=public:hotspots&outputFormat=application/json&CQL_FILTER=({filter_string})%20AND%20datetime%20%3E%20%27{from_date}%27%20AND%20datetime%20%3C%20%27{to_date}%27%20AND%20INTERSECTS(location,%20POLYGON(({y_max}%20{x_min},%20{y_max}%20{x_max},%20{y_min}%20{x_max},%20{y_min}%20{x_min},%20{y_max}%20{x_min})))&maxFeatures={max_features}&startIndex=0&sortBy=sensor%20A")
     url = f"https://hotspots.dea.ga.gov.au/geoserver/public/wfs?service=WFS&version=1.1.0&request=GetFeature&typeName=public:hotspots&outputFormat=application/json&CQL_FILTER=({filter_string})%20AND%20datetime%20%3E%20%27{from_date}%27%20AND%20datetime%20%3C%20%27{to_date}%27%20AND%20INTERSECTS(location,%20POLYGON(({y_max}%20{x_min},%20{y_max}%20{x_max},%20{y_min}%20{x_max},%20{y_min}%20{x_min},%20{y_max}%20{x_min})))&maxFeatures={max_features}&startIndex=0&sortBy=sensor%20A"
     
     hotspots_gdf = gpd.read_file(url)
@@ -94,34 +98,38 @@ def load_hotspots(filter_string, time_period, bbox, max_features, min_confidence
     
 # Create a query object
 
-def wms_xarray(name, url,layer, bbox):
+def wms_xarray(name, url,layer, bbox, layerstyle, layertime, layerformat, layersizex, layersizey):
+    logger.info('Loading WMS to xarray')
     y_max = bbox[0]
     x_min = bbox[1]
     y_min = bbox[2]
     x_max = bbox[3]
-    
+
     #TODO - check image exists before recreating
     infile = name+'.tif'
     outfile = name+'_georef.tif'
-    
+
     wms = WebMapService(url, version='1.3.0')
     crs = sorted(wms[layer].crsOptions)
     time = wms[layer].timepositions
+    for i in time:
+        logger.info('WMS layer time: '+str(i))
     for i in crs:
         logger.info('CRS: '+str(i))
+    
     output = wms.getmap(layers=[layer],
-                            # TODO Styles true colour = tc doesn't work - figure out why
-                            Styles='tc',
-                            srs='EPSG:4326',
-                            bbox=(x_min, y_min, x_max, y_max),
-                            size=(512, 512),
-                            format='image/geotiff',
-                            # TODO remove specific time reference
-                            time=time[5]
-                            )
-
+                styles=[layerstyle],
+                srs='EPSG:4326',
+                bbox=(x_min, y_min, x_max, y_max),
+                size=(layersizex, layersizey),
+                format='image/'+layerformat,
+                # TODO remove specific time reference
+                time=layertime
+                )
+            
     with open(infile, 'wb') as out:
         out.write(output.read())
+        
    
     # TODO write as python rather than system call
     epsg ='EPSG:4326'
@@ -129,7 +137,7 @@ def wms_xarray(name, url,layer, bbox):
     os.system('gdal_translate -a_srs '+epsg+' -a_ullr '+str(x_min)+' '+str(y_max)+' '+str(x_max)+' '+str(y_min)+' '+infile+' '+outfile)
     logger.info("Background image georeferencing complete") 
     ds = xr.open_rasterio(outfile)
-    logger.info("Background image loaded to xarray for plotting")
+    logger.info("Background image loaded to xarray for plotting "+str(ds.shape))
     
     return(ds)
 
@@ -154,29 +162,25 @@ def get_dates(hotspots_gdf, frame_freq):
     return(comp_dates)
     
     
-def run_animation(frame_freq, name, hotspots_gdf, ds, hotspots_markersize, hotspots_alpha, fade_hours, fade_cmap, hotspots_cmap, bbox, timezone, timezone_code):
+def run_animation(frame_freq, name, hotspots_gdf, ds, hotspots_markersize, hotspots_alpha, fade_hours, fade_cmap, hotspots_cmap, bbox, timezone, timezone_code, layervmax):
     y_max = bbox[0]
     x_min = bbox[1]
     y_min = bbox[2]
     x_max = bbox[3]
     
     comp_dates = get_dates(hotspots_gdf, frame_freq)
-    output_dir = create_outdir(name)
-    
-    
+    output_dir = create_outdir(name) 
     
     cmap = get_cmap(hotspots_cmap)
     cmap.set_over(fade_cmap)
-    
-    
-    
+
     fig, ax = plt.subplots(1, 1, figsize=(10, 10))
     
     # Add DEA logo
     arr_dea = image.imread('dea-stacked.jpg')
     imagebox = OffsetImage(arr_dea, zoom=0.03)
-    imagex = x_max - ((abs(x_max) - abs(x_min)) *0.08)
-    imagey = y_min + ((abs(y_min) - abs(y_max)) * 0.92)
+    imagex = x_max - ((abs(x_max) - abs(x_min)) *0.1)
+    imagey = y_min + ((abs(y_min) - abs(y_max)) * 0.90)
     ab = AnnotationBbox(imagebox, (imagex, imagey))
 
     for i, comp_date in enumerate(comp_dates):
@@ -191,7 +195,7 @@ def run_animation(frame_freq, name, hotspots_gdf, ds, hotspots_markersize, hotsp
         hotspots_prev.sort_values('hours_before', inplace=True, ascending=False)
     
         # Plot Geomedian as underlay
-        ds[[0,1,2]].plot.imshow(ax=ax, vmax=400)
+        ds[[0,1,2]].plot.imshow(ax=ax, vmax=layervmax)
         
         # Plot hotspots
         hotspots_prev.plot(ax=ax,
@@ -225,9 +229,9 @@ def run_animation(frame_freq, name, hotspots_gdf, ds, hotspots_markersize, hotsp
                 ha='left', 
                 va='center', 
                 transform=ax.transAxes,
-                fontdict={'fontsize': 20, 
+                fontdict={'fontsize': 16, 
                          'color': 'white', 
-                         'fontname':'Liberation Sans'})
+                         'fontname':'DejaVu Sans'})
         ax.add_artist(ab)
 
         # Export frame to file
@@ -236,22 +240,46 @@ def run_animation(frame_freq, name, hotspots_gdf, ds, hotspots_markersize, hotsp
                     dpi=100,
                     pad_inches=0)
         plt.cla()
+        
+        # Crop the image to remove white border (work around for matplotlib white border issue - TODO revisit for better solution)
+        
+        # Opens a image in RGB mode 
+        im = Image.open(f'{output_dir}/hotspots_{i}.png') 
+        width, height = im.size 
+        # Setting the points for cropped image
+        trimpixels = 32
+        left = trimpixels
+        top = 0
+        right = int((width - trimpixels)/16)*16
+        bottom = int((height - trimpixels)/16)*16
+          
+        # Cropped image of above dimension 
+        # (It will not change orginal image) 
+        im1 = im.crop((left, top, right, bottom)) 
+          
+        # Shows the image in image viewer 
+        im1.save(f'{output_dir}/hotspots_{i}.png')
 
     ###########################################
     # Combine into MP4 animation using FFMPEG #
     ###########################################
     #TODD replace with subprocess
-
-    logger.info('ffmpeg -y -r 12 -i '+output_dir+'/hotspots_%d.png -c:v libx264 -vf crop=in_w-15:in_h-15 -pix_fmt yuv420p '+output_dir+'/'+name+'_hotspots_animation.mp4')
-    os.system('ffmpeg -y -r 12 -i '+output_dir+'/hotspots_%d.png -c:v libx264 -vf crop=in_w-15:in_h-15 -pix_fmt yuv420p '+output_dir+'/'+name+'_hotspots_animation.mp4')
-
-    logger.info('ffmpeg -y -i '+output_dir+'/hotspots_%d.jpeg -vf crop=in_w-15:in_h-15,minterpolate=fps=24 '+output_dir+'/'+name+'_hotspots_animation.gif')
-    os.system('ffmpeg -y -i '+output_dir+'/hotspots_%d.png -vf crop=in_w-15:in_h-15,minterpolate=fps=24 '+output_dir+'/'+name+'_hotspots_animation.gif')
-
     
+    #TODO scale the png to be even dimensions scale=320:240
+
+    logger.info('ffmpeg -y -r 12 -i '+output_dir+'/hotspots_%d.png -c:v libx264 -filter:v scale=720:-1 libx264 -pix_fmt yuv420p '+output_dir+'/'+name+'_hotspots_animation.mp4')
+    os.system('ffmpeg -y -r 12 -i '+output_dir+'/hotspots_%d.png -c:v libx264 -filter:v scale=720:-1 -pix_fmt yuv420p '+output_dir+'/'+name+'_hotspots_animation.mp4')
+
+    logger.info('ffmpeg -y -i '+output_dir+'/hotspots_%d.png -vf minterpolate=fps=24 '+output_dir+'/'+name+'_hotspots_animation.gif')
+    os.system('ffmpeg -y -i '+output_dir+'/hotspots_%d.png -vf minterpolate=fps=24 '+output_dir+'/'+name+'_hotspots_animation.gif')
+
+     
 if __name__ == '__main__':
     file_loader = FileSystemLoader("templates")
     env = Environment(loader=file_loader)
+
+    
+
 
     # Get configurations
     satellites = []
@@ -269,12 +297,19 @@ if __name__ == '__main__':
                                      configuration['min_confidence'])
 
         # Load background image as xarray
+        
+            
         ds = wms_xarray(configuration['name'],
-                        configuration['url'],
-                        configuration['layer'],
-                        configuration['bbox']
-                        )
-          
+                    configuration['url'],
+                    configuration['layer'],
+                    configuration['bbox'],
+                    configuration['layerstyle'],
+                    configuration['layertime'],
+                    configuration['layerformat'],
+                    configuration['layersizex'],
+                    configuration['layersizey']
+                    )
+
         run_animation(configuration['frame_freq'],
                       configuration['name'],
                       hotspots_gdf, ds,
@@ -285,5 +320,6 @@ if __name__ == '__main__':
                       configuration['hotspots_cmap'],
                       configuration['bbox'],
                       configuration['timezone'],
-                      configuration['timezone_code']
+                      configuration['timezone_code'],
+                      configuration['layervmax']
                       )
