@@ -9,6 +9,7 @@
 ##################
 
 import os
+import subprocess
 import logging as logger
 logger.basicConfig(format='%(levelname)s:%(message)s', level=logger.INFO)
 import pandas as pd
@@ -134,7 +135,9 @@ def wms_xarray(name, url,layer, bbox, layerstyle, layertime, layerformat, layers
     # TODO write as python rather than system call
     epsg ='EPSG:4326'
     logger.info('gdal_translate -a_srs '+epsg+' -a_ullr '+str(x_min)+' '+str(y_min)+' '+str(x_max)+' '+str(y_max)+' '+infile+' '+outfile)
-    os.system('gdal_translate -a_srs '+epsg+' -a_ullr '+str(x_min)+' '+str(y_max)+' '+str(x_max)+' '+str(y_min)+' '+infile+' '+outfile)
+    #logger.info('gdal_translate','-a_srs', epsg, '-a_ullr', str(x_min), str(y_max), str(x_max), str(y_min), infile, outfile)
+    #os.system('gdal_translate -a_srs '+epsg+' -a_ullr '+str(x_min)+' '+str(y_max)+' '+str(x_max)+' '+str(y_min)+' '+infile+' '+outfile)
+    subprocess.call(['gdal_translate','-a_srs', epsg, '-a_ullr', str(x_min), str(y_max), str(x_max), str(y_min), infile, outfile])
     logger.info("Background image georeferencing complete") 
     ds = xr.open_rasterio(outfile)
     logger.info("Background image loaded to xarray for plotting "+str(ds.shape))
@@ -274,11 +277,12 @@ def run_animation(frame_freq, name, hotspots_gdf, ds, hotspots_markersize, hotsp
     #TODO scale the png to be even dimensions scale=320:240
 
     logger.info('ffmpeg -y -r 12 -i '+output_dir+'/hotspots_%d.png -c:v libx264 -filter:v scale=720:-1 libx264 -pix_fmt yuv420p '+output_dir+'/'+name+'_hotspots_animation.mp4')
-    os.system('ffmpeg -y -r 12 -i '+output_dir+'/hotspots_%d.png -c:v libx264 -filter:v scale=720:-1 -pix_fmt yuv420p '+output_dir+'/'+name+'_hotspots_animation.mp4')
-
+    #os.system('ffmpeg -y -r 12 -i '+output_dir+'/hotspots_%d.png -c:v libx264 -filter:v scale=720:-1 -pix_fmt yuv420p '+output_dir+'/'+name+'_hotspots_animation.mp4')
+    subprocess.call(['ffmpeg', '-y','-r', '12', '-i', output_dir+'/hotspots_%d.png', '-c:v','-filter:v','scale=720:-1', 'libx264', '-pix_fmt', 'yuv420p', output_dir+'/'+name+'_hotspots_animation.mp4'])
+    
     logger.info('ffmpeg -y -i '+output_dir+'/hotspots_%d.png -vf minterpolate=fps=24 '+output_dir+'/'+name+'_hotspots_animation.gif')
-    os.system('ffmpeg -y -i '+output_dir+'/hotspots_%d.png -vf minterpolate=fps=24 '+output_dir+'/'+name+'_hotspots_animation.gif')
-
+    #os.system('ffmpeg -y -i '+output_dir+'/hotspots_%d.png -vf minterpolate=fps=24 '+output_dir+'/'+name+'_hotspots_animation.gif')
+    subprocess.call(['ffmpeg', '-y', '-i', output_dir+'/hotspots_%d.png', '-vf' , 'minterpolate=fps=24', output_dir+'/'+name+'_hotspots_animation.gif'])
      
 if __name__ == '__main__':
     file_loader = FileSystemLoader("templates")
