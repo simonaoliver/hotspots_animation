@@ -1,6 +1,37 @@
 --- 
 configurations: 
   - 
+    description: "DEA Hotspots animation Victoria New South Wales"
+    name: 'vicnswhotspots' #'name of spatial subset'
+    sensors: #sensors to use in animation
+      -
+        AVHRR: ['SRSS']
+        MODIS: ['MOD14']
+        VIIRS: ['AFMOD', 'EDR'] 
+    time_period: 90 #time period prior to now in days
+    timezone: 'Australia/Sydney' #timezone for display
+    timezone_code: 'AEDT'
+    bbox: [-28.157021, 140.961682, -39.159082, 154.109154 ] # y_max, x_min, y_min, x_max
+    min_confidence: 20 #minimum confidence 0 - 100 percent
+    max_features: 500000 #maximum number of features to load from WFS
+    frame_freq: '4H' #frame frequency for ffmpeg
+    hotspots_markersize: 4 #size to plot hotspots on map
+    hotspots_alpha: 0.5 #transparency to plot hotspots on map
+    fade_hours: 72 #hours used to fade hotspots
+    fade_cmap: '#2B2D2F' #colour for faded hotspots
+    hotspots_cmap: 'YlOrRd_r' #colour ramp for plotting hotspots
+    url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
+    layer: "landsat8_geomedian" #WMS layer name
+    layertime: '2018-01-01T00:00:00.000Z'
+    layerstyle: 'fc'
+    layerformat: 'png'
+    layersizex: 512
+    layersizey: 512 
+    layervmax: 500
+    placenames: ['Sydney', 'Canberra', 'Melbourne']
+    placenamexys: [[151.205475, -33.861481], [149.13435, -35.27603], [144.963425, -37.813938]]
+    placenamepositions: ['right', 'right', 'right']
+  - 
     description: "DEA Hotspots animation Sydney region"
     name: 'sydneyhotspots' #'name of spatial subset'
     sensors: #sensors to use in animation
@@ -50,7 +81,7 @@ configurations:
     hotspots_alpha: 0.5 #transparency to plot hotspots on map
     fade_hours: 72 #hours used to fade hotspots
     fade_cmap: '#2B2D2F' #colour for faded hotspots
-    hotspots_cmap: 'YlOrRd' #colour ramp for plotting hotspots
+    hotspots_cmap: 'YlOrRd_r' #colour ramp for plotting hotspots
     url: "https://ows.services.dea.ga.gov.au" #WMS for background image
     layer: "ls8_nbart_geomedian_annual" #WMS layer name
     layertime: '2017-01-01'
@@ -62,37 +93,6 @@ configurations:
     placenames: ['Canberra']
     placenamexys: [[149.13435, -35.27603]]
     placenamepositions: ['right']
-  - 
-    description: "DEA Hotspots animation Victoria New South Wales"
-    name: 'vicnswhotspots' #'name of spatial subset'
-    sensors: #sensors to use in animation
-      -
-        AVHRR: ['SRSS']
-        MODIS: ['MOD14']
-        VIIRS: ['AFMOD', 'EDR'] 
-    time_period: 90 #time period prior to now in days
-    timezone: 'Australia/Sydney' #timezone for display
-    timezone_code: 'AEDT'
-    bbox: [-28.157021, 140.961682, -39.159082, 154.109154 ] # y_max, x_min, y_min, x_max
-    min_confidence: 20 #minimum confidence 0 - 100 percent
-    max_features: 500000 #maximum number of features to load from WFS
-    frame_freq: '4H' #frame frequency for ffmpeg
-    hotspots_markersize: 4 #size to plot hotspots on map
-    hotspots_alpha: 0.5 #transparency to plot hotspots on map
-    fade_hours: 72 #hours used to fade hotspots
-    fade_cmap: '#2B2D2F' #colour for faded hotspots
-    hotspots_cmap: 'YlOrRd' #colour ramp for plotting hotspots
-    url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
-    layer: "landsat8_geomedian" #WMS layer name
-    layertime: '2018-01-01T00:00:00.000Z'
-    layerstyle: 'fc'
-    layerformat: 'png'
-    layersizex: 512
-    layersizey: 512 
-    layervmax: 500
-    placenames: ['Sydney', 'Canberra', 'Melbourne']
-    placenamexys: [[151.205475, -33.861481], [149.13435, -35.27603], [144.963425, -37.813938]]
-    placenamepositions: ['right', 'right', 'right']
   - 
     description: "DEA Hotspots animation South Western Australia"
     name: 'swahotspots' #'name of spatial subset'
@@ -112,7 +112,7 @@ configurations:
     hotspots_alpha: 0.5 #transparency to plot hotspots on map
     fade_hours: 72 #hours used to fade hotspots
     fade_cmap: '#2B2D2F' #colour for faded hotspots
-    hotspots_cmap: 'YlOrRd' #colour ramp for plotting hotspots
+    hotspots_cmap: 'YlOrRd_r' #colour ramp for plotting hotspots
     url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
     layer: "landsat8_geomedian" #WMS layer name
     layertime: '2018-01-01T00:00:00.000Z'
@@ -143,7 +143,7 @@ configurations:
     hotspots_alpha: 0.5 #transparency to plot hotspots on map
     fade_hours: 72 #hours used to fade hotspots
     fade_cmap: '#2B2D2F' #colour for faded hotspots
-    hotspots_cmap: 'YlOrRd' #colour ramp for plotting hotspots
+    hotspots_cmap: 'YlOrRd_r' #colour ramp for plotting hotspots
     url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
     layer: "landsat8_geomedian" #WMS layer name
     layertime: '2018-01-01T00:00:00.000Z'
@@ -174,7 +174,7 @@ configurations:
     hotspots_alpha: 0.5 #transparency to plot hotspots on map
     fade_hours: 72 #hours used to fade hotspots
     fade_cmap: '#2B2D2F' #colour for faded hotspots
-    hotspots_cmap: 'YlOrRd' #colour ramp for plotting hotspots
+    hotspots_cmap: 'YlOrRd_r' #colour ramp for plotting hotspots
     url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
     layer: "landsat8_geomedian" #WMS layer name
     layertime: '2018-01-01T00:00:00.000Z'
@@ -205,7 +205,7 @@ configurations:
     hotspots_alpha: 0.5 #transparency to plot hotspots on map
     fade_hours: 72 #hours used to fade hotspots
     fade_cmap: '#2B2D2F' #colour for faded hotspots
-    hotspots_cmap: 'YlOrRd' #colour ramp for plotting hotspots
+    hotspots_cmap: 'YlOrRd_r' #colour ramp for plotting hotspots
     url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
     layer: "landsat8_geomedian" #WMS layer name
     layertime: '2018-01-01T00:00:00.000Z'
@@ -236,7 +236,7 @@ configurations:
     hotspots_alpha: 0.5 #transparency to plot hotspots on map
     fade_hours: 72 #hours used to fade hotspots
     fade_cmap: '#2B2D2F' #colour for faded hotspots
-    hotspots_cmap: 'YlOrRd' #colour ramp for plotting hotspots
+    hotspots_cmap: 'YlOrRd_r' #colour ramp for plotting hotspots
     url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
     layer: "landsat8_geomedian" #WMS layer name
     layertime: '2018-01-01T00:00:00.000Z'
@@ -267,7 +267,7 @@ configurations:
     hotspots_alpha: 0.5 #transparency to plot hotspots on map
     fade_hours: 72 #hours used to fade hotspots
     fade_cmap: '#2B2D2F' #colour for faded hotspots
-    hotspots_cmap: 'YlOrRd' #colour ramp for plotting hotspots
+    hotspots_cmap: 'YlOrRd_r' #colour ramp for plotting hotspots
     url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
     layer: "landsat8_geomedian" #WMS layer name
     layertime: '2018-01-01T00:00:00.000Z'
