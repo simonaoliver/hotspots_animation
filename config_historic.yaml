@@ -1,0 +1,34 @@
+--- 
+configurations: 
+  - 
+    description: "DEA Hotspots animation ACT region"
+    name: '2003acthotspots' #'name of spatial subset'
+    sensors: #sensors to use in animation
+      -
+        AVHRR: ['GA']
+        MODIS: ['MOD14']
+        VIIRS: ['AFMOD', 'EDR'] 
+    time_period: 20 #time period prior to now in days
+    to_date: 2003-01-30 # '2018-01-01T00:00:00.000Z' # date to end period upon
+    timezone: 'Australia/Sydney' #timezone for display
+    timezone_code: 'AEDT'
+    bbox: [-35.0, 148.0, -36.5, 149.5 ] # y_max, x_min, y_min, x_max
+    min_confidence: 0 #minimum confidence 0 - 100 percent
+    max_features: 500000 #maximum number of features to load from WFS
+    frame_freq: '4H' #frame frequency for ffmpeg
+    hotspots_markersize: 4 #size to plot hotspots on map
+    hotspots_alpha: 0.5 #transparency to plot hotspots on map
+    fade_hours: 72 #hours used to fade hotspots
+    fade_cmap: '#2B2D2F' #colour for faded hotspots
+    hotspots_cmap: 'YlOrRd_r' #colour ramp for plotting hotspots
+    url: "https://ows.services.dea.ga.gov.au" #WMS for background image
+    layer: "ls8_nbart_geomedian_annual" #WMS layer name
+    layertime: '2017-01-01'
+    layerstyle: 'infrared_green'
+    layerformat: 'png'
+    layersizex: 1024
+    layersizey: 1024
+    layervmax: 500
+    placenames: ['Canberra', 'Cooma', 'Jindabyne']
+    placenamexys: [[149.13435, -35.27603], [149.125977, -36.234692], [148.616, -36.40]]
+    placenamepositions: ['left', 'left', 'left']

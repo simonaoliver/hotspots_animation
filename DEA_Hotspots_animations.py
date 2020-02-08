@@ -15,6 +15,7 @@ logger.basicConfig(format='%(levelname)s:%(message)s', level=logger.INFO)
 import pandas as pd
 import geopandas as gpd
 import datetime as dt
+from datetime import datetime
 import matplotlib.pyplot as plt
 import matplotlib.image as image
 from PIL import Image
@@ -30,10 +31,6 @@ from matplotlib.cm import get_cmap
 # Create custom cmap with dark grey at end 
 parser.add_argument('--configuration', dest='configuration', default='config.yaml',help='animation configuration')
 args = parser.parse_args()
-
-
-
-
 
 
 ################################
@@ -65,25 +62,42 @@ def filter(sensors):
 # Load WFS query data
 
     
-def load_hotspots(filter_string, time_period, bbox, max_features, min_confidence):
+def load_hotspots(filter_string, time_period, bbox, max_features, min_confidence, to_date):
     y_max = bbox[0]
     x_min = bbox[1]
     y_min = bbox[2]
     x_max = bbox[3]
+    if to_date is None:
+        
+        to_date = dt.datetime.now()
     
-    to_date = dt.datetime.today().strftime('%Y-%m-%d')  
-    from_date = (dt.datetime.today() - dt.timedelta(days=time_period)).strftime('%Y-%m-%d')
+    logger.info(str(to_date)+' '+str(type(to_date)))
+    from_date = (to_date - dt.timedelta(days=time_period)).strftime('%Y-%m-%d')
+    
+    # trim datetime to enable WFS 
+    to_date = to_date.strftime('%Y-%m-%d')
+      
     # TODO - sort out paging - looks like there is a limit to WFS requests number returned per query
     logger.info(f"https://hotspots.dea.ga.gov.au/geoserver/public/wfs?service=WFS&version=1.1.0&request=GetFeature&typeName=public:hotspots&outputFormat=application/json&CQL_FILTER=({filter_string})%20AND%20datetime%20%3E%20%27{from_date}%27%20AND%20datetime%20%3C%20%27{to_date}%27%20AND%20INTERSECTS(location,%20POLYGON(({y_max}%20{x_min},%20{y_max}%20{x_max},%20{y_min}%20{x_max},%20{y_min}%20{x_min},%20{y_max}%20{x_min})))&maxFeatures={max_features}&startIndex=0&sortBy=sensor%20A")
     url = f"https://hotspots.dea.ga.gov.au/geoserver/public/wfs?service=WFS&version=1.1.0&request=GetFeature&typeName=public:hotspots&outputFormat=application/json&CQL_FILTER=({filter_string})%20AND%20datetime%20%3E%20%27{from_date}%27%20AND%20datetime%20%3C%20%27{to_date}%27%20AND%20INTERSECTS(location,%20POLYGON(({y_max}%20{x_min},%20{y_max}%20{x_max},%20{y_min}%20{x_max},%20{y_min}%20{x_min},%20{y_max}%20{x_min})))&maxFeatures={max_features}&startIndex=0&sortBy=sensor%20A"
     
     hotspots_gdf = gpd.read_file(url)
+    logger.info(str(hotspots_gdf['stop_dt']))
+    
+    # TODO - improved None value handling  -currently just look at first and apply that to all
+    if hotspots_gdf['confidence'][0] == None:
+        logger.info('Skipping confidence filter as confidence not populated')
+    else:
 
-    # Filter by confidence
-    hotspots_gdf = hotspots_gdf.loc[hotspots_gdf.confidence >= min_confidence]
+        # Filter by confidence
+        hotspots_gdf = hotspots_gdf.loc[hotspots_gdf.confidence >= min_confidence]
 
     # Fix datetime
-    hotspots_gdf['datetime'] = pd.to_datetime(hotspots_gdf['start_dt'])
+    if hotspots_gdf['start_dt'][0] == None:
+        logger.info('Start date field is not populated')
+        hotspots_gdf['datetime'] = pd.to_datetime(hotspots_gdf['datetime'])
+    else:
+        hotspots_gdf['datetime'] = pd.to_datetime(hotspots_gdf['start_dt'])
 
     # Extract required columns
     hotspots_gdf = hotspots_gdf.loc[:, [
@@ -91,6 +105,7 @@ def load_hotspots(filter_string, time_period, bbox, max_features, min_confidence
             ]]
     hotspots_gdf.sort_values('datetime', ascending=True, inplace=True)
     logger.info('Hotspots loaded successfully '+str(hotspots_gdf.geometry.total_bounds))
+
     return(hotspots_gdf)
 
 ################################
@@ -278,7 +293,7 @@ def run_animation(frame_freq, name, hotspots_gdf, ds, hotspots_markersize, hotsp
 
     logger.info('ffmpeg -y -r 12 -i '+output_dir+'/hotspots_%d.png -c:v libx264 -filter:v scale=720:-1 libx264 -pix_fmt yuv420p '+output_dir+'/'+name+'_hotspots_animation.mp4')
     #os.system('ffmpeg -y -r 12 -i '+output_dir+'/hotspots_%d.png -c:v libx264 -filter:v scale=720:-1 -pix_fmt yuv420p '+output_dir+'/'+name+'_hotspots_animation.mp4')
-    subprocess.call(['ffmpeg', '-y','-r', '12', '-i', output_dir+'/hotspots_%d.png', '-c:v','-filter:v','scale=720:-1', 'libx264', '-pix_fmt', 'yuv420p', output_dir+'/'+name+'_hotspots_animation.mp4'])
+    subprocess.call(['ffmpeg', '-y','-r', '12', '-i', output_dir+'/hotspots_%d.png', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', output_dir+'/'+name+'_hotspots_animation.mp4'])
     
     logger.info('ffmpeg -y -i '+output_dir+'/hotspots_%d.png -vf minterpolate=fps=24 '+output_dir+'/'+name+'_hotspots_animation.gif')
     #os.system('ffmpeg -y -i '+output_dir+'/hotspots_%d.png -vf minterpolate=fps=24 '+output_dir+'/'+name+'_hotspots_animation.gif')
@@ -304,11 +319,11 @@ if __name__ == '__main__':
                                      configuration['time_period'],
                                      configuration['bbox'],
                                      configuration['max_features'], 
-                                     configuration['min_confidence'])
+                                     configuration['min_confidence'],
+                                     configuration['to_date'])
 
         # Load background image as xarray
-        
-            
+        logger.info(hotspots_gdf)
         ds = wms_xarray(configuration['name'],
                     configuration['url'],
                     configuration['layer'],
