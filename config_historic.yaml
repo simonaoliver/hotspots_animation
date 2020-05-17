@@ -32,3 +32,291 @@ configurations:
     placenames: ['Canberra', 'Cooma', 'Jindabyne']
     placenamexys: [[149.13435, -35.27603], [149.125977, -36.234692], [148.616, -36.40]]
     placenamepositions: ['left', 'left', 'left']
+  -
+    description: "DEA Hotspots animation Victoria New South Wales"
+    name: '2019vicnswhotspots' #'name of spatial subset'
+    sensors: #sensors to use in animation
+      -
+        AVHRR: ['SRSS']
+        MODIS: ['MOD14']
+        VIIRS: ['AFMOD', 'EDR']
+    time_period: 166 #time period prior to now in days
+    to_date: '2020-02-14T00:00:00.000Z' # date to end period upon - null defaults to time = now
+    timezone: 'Australia/Sydney' #timezone for display
+    timezone_code: 'AEDT'
+    bbox: [-28.157021, 140.961682, -39.159082, 154.109154 ] # y_max, x_min, y_min, x_max
+    min_confidence: 20 #minimum confidence 0 - 100 percent
+    max_features: 500000 #maximum number of features to load from WFS
+    frame_freq: '4H' #frame frequency for ffmpeg
+    hotspots_markersize: 4 #size to plot hotspots on map
+    hotspots_alpha: 0.5 #transparency to plot hotspots on map
+    fade_hours: 72 #hours used to fade hotspots
+    fade_cmap: '#2B2D2F' #colour for faded hotspots
+    hotspots_cmap: 'YlOrRd_r' #colour ramp for plotting hotspots
+    url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
+    layer: "landsat8_geomedian" #WMS layer name
+    layertime: '2018-01-01T00:00:00.000Z'
+    layerstyle: 'fc'
+    layerformat: 'png'
+    layersizex: 512
+    layersizey: 512
+    layervmax: 500
+    placenames: ['Sydney', 'Canberra', 'Melbourne']
+    placenamexys: [[151.205475, -33.861481], [149.13435, -35.27603], [144.963425, -37.813938]]
+    placenamepositions: ['right', 'right', 'right']
+  -
+    description: "DEA Hotspots animation Sydney region"
+    name: '2019sydneyhotspots' #'name of spatial subset'
+    sensors: #sensors to use in animation
+      -
+        AVHRR: ['SRSS']
+        MODIS: ['MOD14']
+        VIIRS: ['AFMOD', 'EDR']
+    time_period: 166 #time period prior to now in days
+    to_date: '2020-02-14T00:00:00.000Z' # date to end period upon - null defaults to time = now
+    timezone: 'Australia/Sydney' #timezone for display
+    timezone_code: 'AEDT'
+    bbox: [-32.324632, 148.0, -34.632651, 152.0 ] # y_max, x_min, y_min, x_max
+    min_confidence: 20 #minimum confidence 0 - 100 percent
+    max_features: 500000 #maximum number of features to load from WFS
+    frame_freq: '4H' #frame frequency for ffmpeg
+    hotspots_markersize: 4 #size to plot hotspots on map
+    hotspots_alpha: 0.5 #transparency to plot hotspots on map
+    fade_hours: 72 #hours used to fade hotspots
+    fade_cmap: '#2B2D2F' #colour for faded hotspots
+    hotspots_cmap: 'YlOrRd' #colour ramp for plotting hotspots
+    url: "https://ows.services.dea.ga.gov.au" #WMS for background image
+    layer: "ls8_nbart_geomedian_annual" #WMS layer name
+    layertime: '2017-01-01'
+    layerstyle: 'infrared_green'
+    layerformat: 'png'
+    layersizex: 1024
+    layersizey: 1024
+    layervmax: 500
+    placenames: ['Sydney', 'Newcastle']
+    placenamexys: [[151.205475, -33.861481], [151.784485, -32.927792]]
+    placenamepositions: ['right', 'right']
+  -
+    description: "DEA Hotspots animation ACT region"
+    name: '2019acthotspots' #'name of spatial subset'
+    sensors: #sensors to use in animation
+      -
+        AVHRR: ['SRSS']
+        MODIS: ['MOD14']
+        VIIRS: ['AFMOD', 'EDR']
+    time_period: 166 #time period prior to now in days
+    to_date: '2020-02-14T00:00:00.000Z' # date to end period upon - null defaults to time = now
+    timezone: 'Australia/Sydney' #timezone for display
+    timezone_code: 'AEDT'
+    bbox: [-35.0, 148.0, -36.5, 149.5 ] # y_max, x_min, y_min, x_max
+    min_confidence: 20 #minimum confidence 0 - 100 percent
+    max_features: 500000 #maximum number of features to load from WFS
+    frame_freq: '4H' #frame frequency for ffmpeg
+    hotspots_markersize: 4 #size to plot hotspots on map
+    hotspots_alpha: 0.5 #transparency to plot hotspots on map
+    fade_hours: 72 #hours used to fade hotspots
+    fade_cmap: '#2B2D2F' #colour for faded hotspots
+    hotspots_cmap: 'YlOrRd_r' #colour ramp for plotting hotspots
+    url: "https://ows.services.dea.ga.gov.au" #WMS for background image
+    layer: "ls8_nbart_geomedian_annual" #WMS layer name
+    layertime: '2017-01-01'
+    layerstyle: 'infrared_green'
+    layerformat: 'png'
+    layersizex: 1024
+    layersizey: 1024
+    layervmax: 500
+    placenames: ['Canberra', 'Cooma', 'Jindabyne']
+    placenamexys: [[149.13435, -35.27603], [149.125977, -36.234692], [148.616, -36.40]]
+    placenamepositions: ['left', 'left', 'left']
+  -
+    description: "DEA Hotspots animation South Western Australia"
+    name: '2019swahotspots' #'name of spatial subset'
+    sensors: #sensors to use in animation
+      -
+        AVHRR: ['SRSS']
+        MODIS: ['MOD14']
+        VIIRS: ['AFMOD', 'EDR']
+    time_period: 166 #time period prior to now in days
+    to_date: '2020-02-14T00:00:00.000Z' # date to end period upon - null defaults to time = now
+    timezone: 'Australia/Perth' #timezone for display
+    timezone_code: 'AWST'
+    bbox: [-23.688726 , 112.921114, -35.192008, 129.002045] # y_max, x_min, y_min, x_max
+    min_confidence: 20 #minimum confidence 0 - 100 percent
+    max_features: 500000 #maximum number of features to load from WFS
+    frame_freq: '4H' #frame frequency for ffmpeg
+    hotspots_markersize: 4 #size to plot hotspots on map
+    hotspots_alpha: 0.5 #transparency to plot hotspots on map
+    fade_hours: 72 #hours used to fade hotspots
+    fade_cmap: '#2B2D2F' #colour for faded hotspots
+    hotspots_cmap: 'YlOrRd_r' #colour ramp for plotting hotspots
+    url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
+    layer: "landsat8_geomedian" #WMS layer name
+    layertime: '2018-01-01T00:00:00.000Z'
+    layerstyle: 'fc'
+    layerformat: 'png'
+    layersizex: 512
+    layersizey: 512
+    layervmax: 500
+    placenames: ['Albany', 'Perth']
+    placenamexys: [[117.865952, -35.003101],[115.861397, -31.95224]]
+    placenamepositions: ['left', 'left']
+  -
+    description: "DEA Hotspots animation North Western Australia"
+    name: '2019nwahotspots' #'name of spatial subset'
+    sensors: #sensors to use in animation
+      -
+        AVHRR: ['SRSS']
+        MODIS: ['MOD14']
+        VIIRS: ['AFMOD', 'EDR']
+    time_period: 166 #time period prior to now in days
+    to_date: '2020-02-14T00:00:00.000Z' # date to end period upon - null defaults to time = now
+    timezone: 'Australia/Perth' #timezone for display
+    timezone_code: 'AWST'
+    bbox: [ -13.688726, 112.921114 , -25.192008, 129.002045 ] # y_max, x_min, y_min, x_max
+    min_confidence: 20 #minimum confidence 0 - 100 percent
+    max_features: 500000 #maximum number of features to load from WFS
+    frame_freq: '4H' #frame frequency for ffmpeg
+    hotspots_markersize: 4 #size to plot hotspots on map
+    hotspots_alpha: 0.5 #transparency to plot hotspots on map
+    fade_hours: 72 #hours used to fade hotspots
+    fade_cmap: '#2B2D2F' #colour for faded hotspots
+    hotspots_cmap: 'YlOrRd_r' #colour ramp for plotting hotspots
+    url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
+    layer: "landsat8_geomedian" #WMS layer name
+    layertime: '2018-01-01T00:00:00.000Z'
+    layerstyle: 'fc'
+    layerformat: 'png'
+    layersizex: 512
+    layersizey: 512
+    layervmax: 500
+    placenames: ['Broome', 'Exmouth']
+    placenamexys: [[122.23922, -17.955379], [114.125008, -21.940201]]
+    placenamepositions: ['left', 'left']
+  -
+    description: "DEA Hotspots animation Queensland"
+    name: '2019qldhotspots' #'name of spatial subset'
+    sensors: #sensors to use in animation
+      -
+        AVHRR: ['SRSS']
+        MODIS: ['MOD14']
+        VIIRS: ['AFMOD', 'EDR']
+    time_period: 166 #time period prior to now in days
+    to_date: '2020-02-141T00:00:00.000Z' # date to end period upon - null defaults to time = now
+    timezone: 'Australia/Brisbane' #timezone for display
+    timezone_code: 'AEST'
+    bbox: [ -9.142306 , 137.994325 , -29.177893 , 153.552171 ] # y_max, x_min, y_min, x_max
+    min_confidence: 20 #minimum confidence 0 - 100 percent
+    max_features: 500000 #maximum number of features to load from WFS
+    frame_freq: '4H' #frame frequency for ffmpeg
+    hotspots_markersize: 4 #size to plot hotspots on map
+    hotspots_alpha: 0.5 #transparency to plot hotspots on map
+    fade_hours: 72 #hours used to fade hotspots
+    fade_cmap: '#2B2D2F' #colour for faded hotspots
+    hotspots_cmap: 'YlOrRd_r' #colour ramp for plotting hotspots
+    url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
+    layer: "landsat8_geomedian" #WMS layer name
+    layertime: '2018-01-01T00:00:00.000Z'
+    layerstyle: 'fc'
+    layerformat: 'png'
+    layersizex: 512
+    layersizey: 512
+    layervmax: 500
+    placenames: ['Brisbane', 'Mackay', 'Townsville']
+    placenamexys: [[153.024292, -27.47101], [149.183333,-21.116667], [146.805695, -19.26639]]
+    placenamepositions: ['right', 'right', 'right']
+  -
+    description: "DEA Hotspots animation North Territory"
+    name: '2019nthotspots' #'name of spatial subset'
+    sensors: #sensors to use in animation
+      -
+        AVHRR: ['SRSS']
+        MODIS: ['MOD14']
+        VIIRS: ['AFMOD', 'EDR']
+    time_period: 166 #time period prior to now in days
+    to_date: '2020-02-14T00:00:00.000Z' # date to end period upon  - null defaults to time = now
+    timezone: 'Australia/Darwin' #timezone for display
+    timezone_code: 'ACDT'
+    bbox: [ -10.905918 , 129.00044 , -25.998614 , 137.999054 ] # y_max, x_min, y_min, x_max
+    min_confidence: 20 #minimum confidence 0 - 100 percent
+    max_features: 500000 #maximum number of features to load from WFS
+    frame_freq: '4H' #frame frequency for ffmpeg
+    hotspots_markersize: 4 #size to plot hotspots on map
+    hotspots_alpha: 0.5 #transparency to plot hotspots on map
+    fade_hours: 72 #hours used to fade hotspots
+    fade_cmap: '#2B2D2F' #colour for faded hotspots
+    hotspots_cmap: 'YlOrRd_r' #colour ramp for plotting hotspots
+    url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
+    layer: "landsat8_geomedian" #WMS layer name
+    layertime: '2018-01-01T00:00:00.000Z'
+    layerstyle: 'fc'
+    layerformat: 'png'
+    layersizex: 512
+    layersizey: 512
+    layervmax: 500
+    placenames: ['Darwin', 'Alice Springs', 'Katherine']
+    placenamexys: [[130.836639, -12.45722], [133.883621, -23.697479], [132.263474,-14.46517]]
+    placenamepositions: ['left', 'left', 'left']
+  -
+    description: "DEA Hotspots animation South Australia"
+    name: '2019sahotspots' #'name of spatial subset'
+    sensors: #sensors to use in animation
+      -
+        AVHRR: ['SRSS']
+        MODIS: ['MOD14']
+        VIIRS: ['AFMOD', 'EDR']
+    time_period: 166 #time period prior to now in days
+    to_date: '2020-02-14T00:00:00.000Z' # date to end period upon  - null defaults to time = now
+    timezone: 'Australia/Adelaide' #timezone for display
+    timezone_code: 'ACDT'
+    bbox: [ -25.996146 , 129.001337, -38.062117, 141.002956 ] # y_max, x_min, y_min, x_max
+    min_confidence: 20 #minimum confidence 0 - 100 percent
+    max_features: 500000 #maximum number of features to load from WFS
+    frame_freq: '4H' #frame frequency for ffmpeg
+    hotspots_markersize: 4 #size to plot hotspots on map
+    hotspots_alpha: 0.5 #transparency to plot hotspots on map
+    fade_hours: 72 #hours used to fade hotspots
+    fade_cmap: '#2B2D2F' #colour for faded hotspots
+    hotspots_cmap: 'YlOrRd_r' #colour ramp for plotting hotspots
+    url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
+    layer: "landsat8_geomedian" #WMS layer name
+    layertime: '2018-01-01T00:00:00.000Z'
+    layerstyle: 'fc'
+    layerformat: 'png'
+    layersizex: 512
+    layersizey: 512
+    layervmax: 500
+    placenames: ['Adelaide', 'Mount Gambier']
+    placenamexys: [[138.598633, -34.928661], [140.77919, -37.831799]]
+    placenamepositions: ['left', 'right']
+  -
+    description: "DEA Hotspots animation Tasmania"
+    name: '2019tashotspots' #'name of spatial subset'
+    sensors: #sensors to use in animation
+      -
+        AVHRR: ['SRSS']
+        MODIS: ['MOD14']
+        VIIRS: ['AFMOD', 'EDR']
+    time_period: 166 #time period prior to now in days
+    to_date: '2020-02-14T00:00:00.000Z' # date to end period upon  - null defaults to time = now
+    timezone: 'Australia/Hobart' #timezone for display
+    timezone_code: 'AEDT'
+    bbox: [ -39.203793 , 143.818923 , -43.740482 , 148.498674 ] # y_max, x_min, y_min, x_max
+    min_confidence: 20 #minimum confidence 0 - 100 percent
+    max_features: 500000 #maximum number of features to load from WFS
+    frame_freq: '4H' #frame frequency for ffmpeg
+    hotspots_markersize: 4 #size to plot hotspots on map
+    hotspots_alpha: 0.5 #transparency to plot hotspots on map
+    fade_hours: 72 #hours used to fade hotspots
+    fade_cmap: '#2B2D2F' #colour for faded hotspots
+    hotspots_cmap: 'YlOrRd_r' #colour ramp for plotting hotspots
+    url: "https://gsky.nci.org.au/ows/dea" #WMS for background image
+    layer: "landsat8_geomedian" #WMS layer name
+    layertime: '2018-01-01T00:00:00.000Z'
+    layerstyle: 'fc'
+    layerformat: 'png'
+    layersizex: 512
+    layersizey: 512
+    layervmax: 500
+    placenames: ['Hobart', 'Launceston']
+    placenamexys: [[147.331665, -42.883209], [147.134674, -41.438759]]
+    placenamepositions: ['right', 'right']
